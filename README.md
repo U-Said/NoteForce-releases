@@ -6,7 +6,8 @@
 |---|---|
 | **Android** (почти все телефоны) | [NoteForce-arm64.apk](https://github.com/U-Said/NoteForce-releases/releases/latest/download/NoteForce-arm64.apk) |
 | Android, универсальный | [NoteForce.apk](https://github.com/U-Said/NoteForce-releases/releases/latest/download/NoteForce.apk) |
-| **Windows 10/11** | [NoteForce-Windows.zip](https://github.com/U-Said/NoteForce-releases/releases/latest/download/NoteForce-Windows.zip) |
+| **Windows 10/11** (Intel/AMD) | [NoteForce-Windows.zip](https://github.com/U-Said/NoteForce-releases/releases/latest/download/NoteForce-Windows.zip) |
+| **Windows 11 на ARM** (Snapdragon: Surface Pro 11/12, Copilot+ PC) | [NoteForce-Windows-arm64.zip](https://github.com/U-Said/NoteForce-releases/releases/latest/download/NoteForce-Windows-arm64.zip) |
 
 Ссылки всегда ведут на последнюю версию. Все версии — в разделе [Releases](https://github.com/U-Said/NoteForce-releases/releases).
 
