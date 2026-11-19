@@ -33,7 +33,7 @@ NoteForce Pro is sold through [lava.top](https://lava.top). Your card details ar
 
 ## Deleting your data
 
-When you delete a note permanently (from the Trash), its contents are erased from the server too; only an empty marker remains so the deletion reaches your other devices. To delete your account and everything stored with it, write to us at the address below from your account email. We delete the account and all its notes from the server within 30 days.
+When you delete a note permanently (from the Trash), its contents are erased from the server too; only an empty marker remains so the deletion reaches your other devices. To delete your account and everything stored with it, open the side menu ☰ → Account and sync → **Delete account** in the app. The account and all its notes are deleted from the server immediately. Without the app, write to us at the address below from your account email; we delete the account within 30 days. Records of NoteForce Pro payments and refunds (email address, order number, amount, currency and date) are kept without a time limit, because Pro is a lifetime purchase, so that a purchased Pro can turn on again if you sign up with the same email; write to us to have them erased too. Technical logs of our service providers may contain your email address for a limited time and are then erased automatically. Details: [Delete your NoteForce account](DELETE-ACCOUNT.md).
 
 ## Children
 
@@ -82,7 +82,7 @@ NoteForce Pro продаётся через [lava.top](https://lava.top). Дан
 
 ## Удаление данных
 
-Когда заметка удаляется навсегда (из корзины), её содержимое стирается и с сервера; остаётся только пустая отметка, чтобы удаление дошло до других ваших устройств. Чтобы удалить аккаунт и всё, что с ним хранится, напишите нам на адрес ниже с почты аккаунта. Аккаунт и все его заметки удаляются с сервера в течение 30 дней.
+Когда заметка удаляется навсегда (из корзины), её содержимое стирается и с сервера; остаётся только пустая отметка, чтобы удаление дошло до других ваших устройств. Чтобы удалить аккаунт и всё, что с ним хранится, откройте в приложении боковое меню ☰ → «Аккаунт и синхронизация» → **«Удалить аккаунт»**. Аккаунт и все его заметки удаляются с сервера сразу. Без приложения напишите нам на адрес ниже с почты аккаунта — мы удалим аккаунт в течение 30 дней. Записи об оплатах и возвратах NoteForce Pro (почта, номер заказа, сумма, валюта и дата) хранятся без срока, потому что Pro покупается навсегда, — чтобы купленный Pro мог снова включиться при регистрации с той же почтой; по просьбе стираем и их. Технические журналы наших поставщиков какое-то время могут содержать адрес почты, затем стираются автоматически. Подробнее: [Удаление аккаунта NoteForce](DELETE-ACCOUNT.md#удаление-аккаунта-noteforce).
 
 ## Дети
 

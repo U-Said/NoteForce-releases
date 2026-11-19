@@ -72,6 +72,8 @@ Without an account NoteForce works too, but notes stay on that device only.
 
 Every device keeps a full copy, so your notes are available offline. For sync a copy is stored on a Supabase server in Frankfurt; each account sees only its own notes. Locked notes reach the server already encrypted — without your password nobody can read them.
 
+To delete your account and its notes from the server, open ☰ → **Account and sync** → **Delete account** — see [Delete your NoteForce account](DELETE-ACCOUNT.md). [Privacy Policy](PRIVACY.md).
+
 ## Support the project
 
 NoteForce is free and has no ads. If it helps you, you can say thanks with a donation: **https://app.lava.top/4179967925** → “Send a donation”.
@@ -153,6 +155,8 @@ Pro — разовая покупка (399 ₽, $5 или €5) на аккау�
 ### Где хранятся заметки
 
 На каждом устройстве лежит полная копия, поэтому заметки доступны без интернета. Для синхронизации копия хранится на сервере Supabase во Франкфурте. Каждый аккаунт видит только свои заметки. Заблокированные заметки сервер получает уже зашифрованными: без вашего пароля их не прочитать.
+
+Чтобы удалить аккаунт и его заметки с сервера, откройте ☰ → **Аккаунт и синхронизация** → **Удалить аккаунт** — подробнее в [Удалении аккаунта NoteForce](DELETE-ACCOUNT.md#удаление-аккаунта-noteforce). [Политика конфиденциальности](PRIVACY.md#политика-конфиденциальности-noteforce).
 
 ### Поддержать проект
 
