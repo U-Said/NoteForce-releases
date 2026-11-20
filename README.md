@@ -25,7 +25,7 @@ The links always point to the latest version. All versions are in [Releases](htt
 
 1. **Colors.** 10 colors; notes can be filtered and sorted by color. With Pro, each of the 10 colors can get your own shade and name.
 2. **Checklists.** Drag items to reorder; checked items move to the bottom. “Check all” and “Delete checked” are in the note’s ⋮ menu.
-3. **Note password.** A locked note is encrypted on the device (AES-256-GCM); the server only receives ciphertext. Open it with the password, a fingerprint (Android), Touch ID (Mac) or Windows Hello.
+3. **Note password.** A locked note is encrypted on the device (AES-256-GCM); the server only receives ciphertext. It asks for the password, a fingerprint (Android), Touch ID (Mac) or Windows Hello every time you open it.
 4. **Instant sync.** An edit on one device appears on your other devices a couple of seconds after you stop typing. Offline everything works as usual, and changes are sent when you are back online.
 5. **Tray and autostart (Windows and macOS).** NoteForce can start at login and live in the system tray or the Mac menu bar. Its menu creates a note or a checklist right away.
 6. **Android widgets.** “Note” shows a chosen note on the home screen: tap a new widget to choose the note, the ⇄ button in the corner changes it. “Quick note” creates a text note or a checklist with one tap.
@@ -109,7 +109,7 @@ NoteForce is free and has no ads. If it helps you, you can say thanks with a don
 
 1. **Цвета.** 10 цветов, заметки можно отфильтровать и отсортировать по цвету. С Pro у каждого из 10 цветов может быть свой оттенок и название.
 2. **Чек-листы.** Пункты перетаскиваются, отмеченные уходят вниз. В меню ⋮ заметки есть «Отметить все» и «Удалить отмеченные».
-3. **Пароль на заметки.** Содержимое заблокированной заметки шифруется на устройстве (AES-256-GCM), на сервер уходит только шифротекст. Открыть можно паролем, отпечатком (Android), Touch ID (Mac) или Windows Hello.
+3. **Пароль на заметки.** Содержимое заблокированной заметки шифруется на устройстве (AES-256-GCM), на сервер уходит только шифротекст. При каждом открытии заметка спрашивает пароль, отпечаток (Android), Touch ID (Mac) или Windows Hello.
 4. **Мгновенная синхронизация.** Правка на одном устройстве появляется на остальных через пару секунд после того, как вы перестали печатать. Без интернета всё работает как обычно, а изменения уходят на сервер при подключении.
 5. **Трей и автозапуск (Windows и macOS).** Программа может запускаться при входе в систему и жить в трее или строке меню Mac. Из её меню можно сразу создать заметку или чек-лист.
 6. **Виджеты Android.** «Заметка» показывает выбранную заметку на рабочем столе: нажмите на новый виджет, чтобы выбрать её, а кнопкой ⇄ в углу смените. «Быстрая заметка» создаёт текст или чек-лист одним нажатием.
