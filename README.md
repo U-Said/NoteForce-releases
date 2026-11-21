@@ -17,6 +17,8 @@ Colored notes and checklists for Windows, macOS, Linux and Android. One account 
 | **macOS 12 or later** (Apple Silicon and Intel) | [NoteForce-macOS.zip](https://github.com/U-Said/NoteForce-releases/releases/latest/download/NoteForce-macOS.zip) |
 | **Linux** (x64, desktops with GTK 3: Ubuntu 22.04+, Debian 12+, Fedora, Mint 21+ and others) | [NoteForce-Linux.tar.gz](https://github.com/U-Said/NoteForce-releases/releases/latest/download/NoteForce-Linux.tar.gz) |
 
+*Windows on ARM, macOS and Linux are still version 1.6.2 for now (their build servers are temporarily unavailable): there the password is asked each time a locked note is opened. Version 1.6.3 for them will follow.*
+
 **Android users of version 1.5 or earlier:** version 1.6 has to be installed once from scratch — see [Install and update](#install-and-update).
 
 The links always point to the latest version. All versions are in [Releases](https://github.com/U-Said/NoteForce-releases/releases).
@@ -25,7 +27,7 @@ The links always point to the latest version. All versions are in [Releases](htt
 
 1. **Colors.** 10 colors; notes can be filtered and sorted by color. With Pro, each of the 10 colors can get your own shade and name.
 2. **Checklists.** Drag items to reorder; checked items move to the bottom. “Check all” and “Delete checked” are in the note’s ⋮ menu.
-3. **Note password.** A locked note is encrypted on the device (AES-256-GCM); the server only receives ciphertext. It asks for the password, a fingerprint (Android), Touch ID (Mac) or Windows Hello every time you open it.
+3. **Note password.** A locked note is encrypted on the device (AES-256-GCM); the server only receives ciphertext. You enter the password, a fingerprint (Android), Touch ID (Mac) or Windows Hello once: the note opens by itself as soon as the password is right. On a computer locked notes then stay open until you close the NoteForce window to the tray or quit the app (minimizing does not close them); on Android, until you leave the app.
 4. **Instant sync.** An edit on one device appears on your other devices a couple of seconds after you stop typing. Offline everything works as usual, and changes are sent when you are back online.
 5. **Tray and autostart (Windows and macOS).** NoteForce can start at login and live in the system tray or the Mac menu bar. Its menu creates a note or a checklist right away.
 6. **Android widgets.** “Note” shows a chosen note on the home screen: tap a new widget to choose the note, the ⇄ button in the corner changes it. “Quick note” creates a text note or a checklist with one tap.
@@ -101,6 +103,8 @@ NoteForce is free and has no ads. If it helps you, you can say thanks with a don
 | **macOS 12 и новее** (Apple Silicon и Intel) | [NoteForce-macOS.zip](https://github.com/U-Said/NoteForce-releases/releases/latest/download/NoteForce-macOS.zip) |
 | **Linux** (x64, рабочий стол с GTK 3: Ubuntu 22.04+, Debian 12+, Fedora, Mint 21+ и другие) | [NoteForce-Linux.tar.gz](https://github.com/U-Said/NoteForce-releases/releases/latest/download/NoteForce-Linux.tar.gz) |
 
+*Для Windows на ARM, macOS и Linux пока версия 1.6.2 (их серверы сборки временно недоступны): там пароль спрашивается при каждом открытии заблокированной заметки. Версия 1.6.3 для них появится позже.*
+
 **У кого на Android стоит версия 1.5 или более ранняя:** версию 1.6 нужно один раз установить заново — см. [Установка и обновление](#установка-и-обновление).
 
 Ссылки всегда ведут на последнюю версию. Все версии лежат в разделе [Releases](https://github.com/U-Said/NoteForce-releases/releases).
@@ -109,7 +113,7 @@ NoteForce is free and has no ads. If it helps you, you can say thanks with a don
 
 1. **Цвета.** 10 цветов, заметки можно отфильтровать и отсортировать по цвету. С Pro у каждого из 10 цветов может быть свой оттенок и название.
 2. **Чек-листы.** Пункты перетаскиваются, отмеченные уходят вниз. В меню ⋮ заметки есть «Отметить все» и «Удалить отмеченные».
-3. **Пароль на заметки.** Содержимое заблокированной заметки шифруется на устройстве (AES-256-GCM), на сервер уходит только шифротекст. При каждом открытии заметка спрашивает пароль, отпечаток (Android), Touch ID (Mac) или Windows Hello.
+3. **Пароль на заметки.** Содержимое заблокированной заметки шифруется на устройстве (AES-256-GCM), на сервер уходит только шифротекст. Пароль, отпечаток (Android), Touch ID (Mac) или Windows Hello вводится один раз: заметка открывается сама, как только пароль верный. Дальше на компьютере заблокированные заметки открываются без пароля, пока окно NoteForce не закрыто в трей или программа не завершена (сворачивание их не закрывает); на Android — пока вы не ушли из приложения.
 4. **Мгновенная синхронизация.** Правка на одном устройстве появляется на остальных через пару секунд после того, как вы перестали печатать. Без интернета всё работает как обычно, а изменения уходят на сервер при подключении.
 5. **Трей и автозапуск (Windows и macOS).** Программа может запускаться при входе в систему и жить в трее или строке меню Mac. Из её меню можно сразу создать заметку или чек-лист.
 6. **Виджеты Android.** «Заметка» показывает выбранную заметку на рабочем столе: нажмите на новый виджет, чтобы выбрать её, а кнопкой ⇄ в углу смените. «Быстрая заметка» создаёт текст или чек-лист одним нажатием.
