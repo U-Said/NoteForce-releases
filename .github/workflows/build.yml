@@ -1,0 +1,246 @@
+# Builds the NoteForce desktop apps published in this repository's releases.
+# Runs only when started by the repository owner (workflow_dispatch). The app's source lives in a private
+# repository and is checked out with the read-only secret NF_SOURCE_TOKEN; only the built apps leave the runner.
+# Flutter builds Windows only for the CPU of the build machine, so each Windows architecture has its own runner.
+# macOS is one universal app (Apple silicon + Intel). Linux is built on Ubuntu 22.04 (glibc 2.35) so that it
+# also runs on older distributions.
+name: Build
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: "Version tag to build, e.g. v1.6.3"
+        required: true
+        type: string
+      windows_x64:
+        description: "Windows x64"
+        type: boolean
+        default: true
+      windows_arm64:
+        description: "Windows ARM64"
+        type: boolean
+        default: true
+      macos:
+        description: "macOS (universal)"
+        type: boolean
+        default: true
+      linux:
+        description: "Linux x64"
+        type: boolean
+        default: true
+      mac_runner:
+        description: "macOS runner (macos-15-intel if Apple silicon runners are busy)"
+        type: choice
+        options: [macos-15, macos-15-intel]
+        default: macos-15
+
+permissions:
+  contents: read
+
+env:
+  FLUTTER_VERSION: 3.50.0
+  SOURCE_REF: ${{ inputs.ref }}
+
+jobs:
+  windows:
+    if: inputs.windows_x64 || inputs.windows_arm64
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: ${{ fromJSON((inputs.windows_x64 && inputs.windows_arm64) && '["x64","arm64"]' || (inputs.windows_x64 && '["x64"]' || '["arm64"]')) }}
+    runs-on: ${{ matrix.arch == 'arm64' && 'windows-11-arm' || 'windows-latest' }}
+    timeout-minutes: 90
+    env:
+      ARCH: ${{ matrix.arch }}
+      ATL: ${{ matrix.arch == 'arm64' && 'Microsoft.VisualStudio.Component.VC.ATL.ARM64' || 'Microsoft.VisualStudio.Component.VC.ATL' }}
+      ARTIFACT: ${{ matrix.arch == 'arm64' && 'NoteForce-Windows-arm64' || 'NoteForce-Windows' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: U-Said/NoteForce
+          ref: ${{ inputs.ref }}
+          token: ${{ secrets.NF_SOURCE_TOKEN }}
+          persist-credentials: false
+
+      - name: Flutter
+        shell: pwsh
+        run: |
+          git clone -q --depth 1 -b $env:FLUTTER_VERSION https://github.com/flutter/flutter.git "$env:RUNNER_TEMP\flutter"
+          "$env:RUNNER_TEMP\flutter\bin" | Out-File -FilePath $env:GITHUB_PATH -Append -Encoding utf8
+
+      - name: Visual Studio C++ and ATL
+        shell: pwsh
+        run: |
+          $vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
+          $vs = & $vswhere -latest -products * -property installationPath
+          "Visual Studio: $vs"
+          $atl = Get-ChildItem "$vs\VC\Tools\MSVC\*\atlmfc\lib\$env:ARCH\atls.lib" -ErrorAction SilentlyContinue
+          if (-not $atl) {
+            "ATL for $env:ARCH not found, installing"
+            $p = Start-Process "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\setup.exe" -ArgumentList @('modify', '--installPath', "`"$vs`"", '--add', $env:ATL, '--quiet', '--norestart', '--nocache') -Wait -PassThru
+            "setup exit: $($p.ExitCode)"
+          } else { "ATL for $env:ARCH is present" }
+
+      - name: Flutter doctor
+        shell: pwsh
+        run: |
+          flutter config --no-analytics
+          flutter --version
+          flutter doctor -v
+
+      - name: Build Windows
+        shell: pwsh
+        run: flutter build windows --release
+
+      - name: Check and archive
+        shell: pwsh
+        run: |
+          $rel = Get-ChildItem build\windows -Recurse -Filter NoteForce.exe | Where-Object FullName -like '*Release*' | Select-Object -First 1
+          "Built: $($rel.FullName)"
+          # CPU of every .exe/.dll from its PE header: 0xAA64 = ARM64, 0x8664 = x64
+          $want = if ($env:ARCH -eq 'arm64') { 'ARM64' } else { 'x64' }
+          $bad = 0
+          foreach ($f in Get-ChildItem $rel.DirectoryName -Include *.exe, *.dll -Recurse) {
+            $b = [IO.File]::ReadAllBytes($f.FullName)
+            $pe = [BitConverter]::ToInt32($b, 0x3C)
+            $m = [BitConverter]::ToUInt16($b, $pe + 4)
+            $arch = switch ($m) { 0xAA64 { 'ARM64' } 0x8664 { 'x64' } 0xA641 { 'ARM64EC' } default { '0x{0:X4}' -f $m } }
+            "{0,-45} {1}" -f $f.Name, $arch
+            if ($arch -ne $want) { $bad++ }
+          }
+          if ($bad -gt 0) { throw "Not ${want}: $bad file(s)" }
+          $ver = $env:SOURCE_REF.TrimStart('v')
+          $pv = $rel.VersionInfo.ProductVersion
+          "NoteForce.exe version: $pv"
+          if (-not $pv.StartsWith("$ver+")) { throw "Version $pv, expected $ver" }
+          Compress-Archive -Path "$($rel.DirectoryName)\*" -DestinationPath "$env:ARTIFACT.zip"
+
+      # Microsoft Store package: msix_config in pubspec.yaml; the Store signs it.
+      # Store name is "NoteForce: Fast Notes" (reserved); Start menu and startup list show "NoteForce".
+      - name: Microsoft Store package (MSIX)
+        shell: pwsh
+        run: |
+          dart run msix:build --architecture $env:ARCH --build-windows false
+          $man = Get-ChildItem build\windows -Recurse -Filter AppxManifest.xml | Where-Object FullName -like '*Release*' | Select-Object -First 1
+          $xml = [IO.File]::ReadAllText($man.FullName).Replace('DisplayName="NoteForce: Fast Notes"', 'DisplayName="NoteForce"').Replace('ShortName="NoteForce: Fast Notes"', 'ShortName="NoteForce"')
+          [IO.File]::WriteAllText($man.FullName, $xml)
+          dart run msix:pack --architecture $env:ARCH --output-path "$PWD" --output-name "NoteForce-Store-$env:ARCH"
+          Get-Item "NoteForce-Store-$env:ARCH.msix" | Format-List Name, Length
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.ARTIFACT }}
+          path: ${{ env.ARTIFACT }}.zip
+          retention-days: 3
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: NoteForce-Store-${{ matrix.arch }}
+          path: NoteForce-Store-${{ matrix.arch }}.msix
+          retention-days: 3
+
+  macos:
+    if: inputs.macos
+    runs-on: ${{ inputs.mac_runner }}
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: U-Said/NoteForce
+          ref: ${{ inputs.ref }}
+          token: ${{ secrets.NF_SOURCE_TOKEN }}
+          persist-credentials: false
+
+      - name: Flutter
+        run: |
+          git clone -q --depth 1 -b "$FLUTTER_VERSION" https://github.com/flutter/flutter.git "$RUNNER_TEMP/flutter"
+          echo "$RUNNER_TEMP/flutter/bin" >> "$GITHUB_PATH"
+
+      - name: Flutter doctor
+        run: |
+          flutter config --no-analytics
+          flutter --version
+          flutter doctor -v
+
+      - name: Build macOS
+        run: flutter build macos --release
+
+      - name: Check and archive
+        run: |
+          APP=build/macos/Build/Products/Release/NoteForce.app
+          ls -la "$APP/Contents/MacOS"
+          # Universal app: both architectures must be present
+          ARCHS=$(lipo -archs "$APP/Contents/MacOS/NoteForce"); echo "Architectures: $ARCHS"
+          [[ "$ARCHS" == *arm64* && "$ARCHS" == *x86_64* ]] || { echo "Need arm64 and x86_64"; exit 1; }
+          for lib in $(find "$APP/Contents/Frameworks" -maxdepth 1 \( -name '*.dylib' -o -name '*.framework' \)); do
+            f="$lib"; [[ -d "$lib" ]] && f="$lib/$(basename "$lib" .framework)"
+            [[ -f "$f" ]] && echo "$(basename "$lib"): $(lipo -archs "$f" 2>/dev/null)"
+          done
+          codesign --verify --deep --strict "$APP" && echo "Signature OK"
+          plutil -p "$APP/Contents/Info.plist" | grep -E 'CFBundle(Identifier|ShortVersionString|Name|DisplayName)|LSMinimumSystemVersion'
+          VER="${SOURCE_REF#v}"
+          SV=$(plutil -extract CFBundleShortVersionString raw "$APP/Contents/Info.plist")
+          [[ "$SV" == "$VER" ]] || { echo "Version $SV, expected $VER"; exit 1; }
+          ditto -c -k --sequesterRsrc --keepParent "$APP" NoteForce-macOS.zip
+          ls -la NoteForce-macOS.zip
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: NoteForce-macOS
+          path: NoteForce-macOS.zip
+          retention-days: 3
+
+  linux:
+    if: inputs.linux
+    runs-on: ubuntu-22.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: U-Said/NoteForce
+          ref: ${{ inputs.ref }}
+          token: ${{ secrets.NF_SOURCE_TOKEN }}
+          persist-credentials: false
+
+      - name: Build packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev \
+            libstdc++-12-dev libsecret-1-dev libjsoncpp-dev file
+
+      - name: Flutter
+        run: |
+          git clone -q --depth 1 -b "$FLUTTER_VERSION" https://github.com/flutter/flutter.git "$RUNNER_TEMP/flutter"
+          echo "$RUNNER_TEMP/flutter/bin" >> "$GITHUB_PATH"
+
+      - name: Flutter doctor
+        run: |
+          flutter config --no-analytics --enable-linux-desktop
+          flutter --version
+          flutter doctor -v
+
+      - name: Build Linux
+        run: flutter build linux --release
+
+      - name: Check and archive
+        run: |
+          B=build/linux/x64/release/bundle
+          ls -la "$B" "$B/lib"
+          file "$B/noteforce"
+          # Own libraries must resolve from lib/ next to the app; system ones exist on any distribution with GTK 3
+          if ldd "$B/noteforce" "$B"/lib/*.so | grep "not found"; then echo "Missing libraries"; exit 1; fi
+          echo "glibc: $(getconf GNU_LIBC_VERSION)"
+          VER="${SOURCE_REF#v}"
+          grep -aqF "$VER" "$B/lib/libapp.so" || { echo "Version $VER not found in libapp.so"; exit 1; }
+          cp linux/packaging/install.sh linux/packaging/README.txt "$B/"
+          chmod +x "$B/noteforce" "$B/install.sh"
+          mkdir -p out && cp -r "$B" out/NoteForce
+          tar -C out -czf NoteForce-Linux.tar.gz NoteForce
+          ls -la NoteForce-Linux.tar.gz
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: NoteForce-Linux
+          path: NoteForce-Linux.tar.gz
+          retention-days: 3
