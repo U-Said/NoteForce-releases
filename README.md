@@ -14,7 +14,7 @@ Colored notes and checklists for Windows, macOS, Linux and Android. One account 
 | Android, universal | [NoteForce.apk](https://github.com/U-Said/NoteForce-releases/releases/latest/download/NoteForce.apk) |
 | **Windows 10/11** (Intel/AMD) | [NoteForce-Windows.zip](https://github.com/U-Said/NoteForce-releases/releases/latest/download/NoteForce-Windows.zip) |
 | **Windows 11 on ARM** (Snapdragon: Surface Pro 11/12, Copilot+ PCs) | [NoteForce-Windows-arm64.zip](https://github.com/U-Said/NoteForce-releases/releases/latest/download/NoteForce-Windows-arm64.zip) |
-| **macOS 12 or later** (Apple Silicon and Intel) | [NoteForce-macOS.zip](https://github.com/U-Said/NoteForce-releases/releases/latest/download/NoteForce-macOS.zip) |
+| **macOS 13 (Ventura) or later** (Apple Silicon and Intel) | [NoteForce-macOS.zip](https://github.com/U-Said/NoteForce-releases/releases/latest/download/NoteForce-macOS.zip) |
 | **Linux** (x64, desktops with GTK 3: Ubuntu 22.04+, Debian 12+, Fedora, Mint 21+ and others) | [NoteForce-Linux.tar.gz](https://github.com/U-Said/NoteForce-releases/releases/latest/download/NoteForce-Linux.tar.gz) |
 
 **Android users of version 1.5 or earlier:** version 1.6 has to be installed once from scratch — see [Install and update](#install-and-update).
@@ -98,7 +98,7 @@ NoteForce is free and has no ads. If it helps you, you can say thanks with a don
 | Android, универсальный | [NoteForce.apk](https://github.com/U-Said/NoteForce-releases/releases/latest/download/NoteForce.apk) |
 | **Windows 10/11** (Intel/AMD) | [NoteForce-Windows.zip](https://github.com/U-Said/NoteForce-releases/releases/latest/download/NoteForce-Windows.zip) |
 | **Windows 11 на ARM** (Snapdragon: Surface Pro 11/12, Copilot+ PC) | [NoteForce-Windows-arm64.zip](https://github.com/U-Said/NoteForce-releases/releases/latest/download/NoteForce-Windows-arm64.zip) |
-| **macOS 12 и новее** (Apple Silicon и Intel) | [NoteForce-macOS.zip](https://github.com/U-Said/NoteForce-releases/releases/latest/download/NoteForce-macOS.zip) |
+| **macOS 13 (Ventura) и новее** (Apple Silicon и Intel) | [NoteForce-macOS.zip](https://github.com/U-Said/NoteForce-releases/releases/latest/download/NoteForce-macOS.zip) |
 | **Linux** (x64, рабочий стол с GTK 3: Ubuntu 22.04+, Debian 12+, Fedora, Mint 21+ и другие) | [NoteForce-Linux.tar.gz](https://github.com/U-Said/NoteForce-releases/releases/latest/download/NoteForce-Linux.tar.gz) |
 
 **У кого на Android стоит версия 1.5 или более ранняя:** версию 1.6 нужно один раз установить заново — см. [Установка и обновление](#установка-и-обновление).
