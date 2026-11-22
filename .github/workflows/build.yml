@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
     inputs:
       ref:
-        description: "Version tag to build, e.g. v1.6.3"
+        description: "Version tag to build, e.g. v1.6.3 (or a branch for a test build)"
         required: true
         type: string
       windows_x64:
@@ -29,6 +29,10 @@ on:
         description: "Linux x64"
         type: boolean
         default: true
+      ios:
+        description: "iPhone: compile check only, unsigned (not installable)"
+        type: boolean
+        default: false
       mac_runner:
         description: "macOS runner (macos-15-intel if Apple silicon runners are busy)"
         type: choice
@@ -110,7 +114,9 @@ jobs:
             if ($arch -ne $want) { $bad++ }
           }
           if ($bad -gt 0) { throw "Not ${want}: $bad file(s)" }
-          $ver = $env:SOURCE_REF.TrimStart('v')
+          # Version from the source; a version tag must match it
+          $ver = (Select-String -Path pubspec.yaml -Pattern '^version: ([^+\s]+)').Matches[0].Groups[1].Value
+          if ($env:SOURCE_REF -match '^v\d' -and $env:SOURCE_REF.TrimStart('v') -ne $ver) { throw "Tag $env:SOURCE_REF but pubspec says $ver" }
           $pv = $rel.VersionInfo.ProductVersion
           "NoteForce.exe version: $pv"
           if (-not $pv.StartsWith("$ver+")) { throw "Version $pv, expected $ver" }
@@ -179,9 +185,11 @@ jobs:
           done
           codesign --verify --deep --strict "$APP" && echo "Signature OK"
           plutil -p "$APP/Contents/Info.plist" | grep -E 'CFBundle(Identifier|ShortVersionString|Name|DisplayName)|LSMinimumSystemVersion'
-          VER="${SOURCE_REF#v}"
+          VER=$(sed -nE 's/^version: ([^+[:space:]]+).*/\1/p' pubspec.yaml)
+          if [[ "$SOURCE_REF" == v[0-9]* && "${SOURCE_REF#v}" != "$VER" ]]; then echo "Tag $SOURCE_REF but pubspec says $VER"; exit 1; fi
           SV=$(plutil -extract CFBundleShortVersionString raw "$APP/Contents/Info.plist")
           [[ "$SV" == "$VER" ]] || { echo "Version $SV, expected $VER"; exit 1; }
+          echo "Minimum macOS: $(plutil -extract LSMinimumSystemVersion raw "$APP/Contents/Info.plist")"
           ditto -c -k --sequesterRsrc --keepParent "$APP" NoteForce-macOS.zip
           ls -la NoteForce-macOS.zip
 
@@ -231,7 +239,8 @@ jobs:
           # Own libraries must resolve from lib/ next to the app; system ones exist on any distribution with GTK 3
           if ldd "$B/noteforce" "$B"/lib/*.so | grep "not found"; then echo "Missing libraries"; exit 1; fi
           echo "glibc: $(getconf GNU_LIBC_VERSION)"
-          VER="${SOURCE_REF#v}"
+          VER=$(sed -nE 's/^version: ([^+[:space:]]+).*/\1/p' pubspec.yaml)
+          if [[ "$SOURCE_REF" == v[0-9]* && "${SOURCE_REF#v}" != "$VER" ]]; then echo "Tag $SOURCE_REF but pubspec says $VER"; exit 1; fi
           grep -aqF "$VER" "$B/lib/libapp.so" || { echo "Version $VER not found in libapp.so"; exit 1; }
           cp linux/packaging/install.sh linux/packaging/README.txt "$B/"
           chmod +x "$B/noteforce" "$B/install.sh"
@@ -244,3 +253,54 @@ jobs:
           name: NoteForce-Linux
           path: NoteForce-Linux.tar.gz
           retention-days: 3
+
+  # iPhone: only checks that the app compiles. An installable build needs Apple signing
+  # (Apple Developer Program), so nothing from this job is published.
+  ios:
+    if: inputs.ios
+    runs-on: ${{ inputs.mac_runner }}
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: U-Said/NoteForce
+          ref: ${{ inputs.ref }}
+          token: ${{ secrets.NF_SOURCE_TOKEN }}
+          persist-credentials: false
+
+      # App Store uploads require Xcode 26 or later
+      - name: Xcode 26
+        run: |
+          XC=$(ls -d /Applications/Xcode_26*.app | sort -V | tail -1)
+          echo "Xcode: $XC"
+          sudo xcode-select -s "$XC"
+          xcodebuild -version
+
+      - name: Flutter
+        run: |
+          git clone -q --depth 1 -b "$FLUTTER_VERSION" https://github.com/flutter/flutter.git "$RUNNER_TEMP/flutter"
+          echo "$RUNNER_TEMP/flutter/bin" >> "$GITHUB_PATH"
+
+      - name: Flutter doctor
+        run: |
+          flutter config --no-analytics
+          flutter --version
+          flutter doctor -v
+
+      # Store build (no Pro, no donation), as App Store rules require
+      - name: Build iOS (unsigned)
+        run: flutter build ios --release --no-codesign --dart-define=NF_PLAY=true
+
+      - name: Check
+        run: |
+          APP=build/ios/iphoneos/Runner.app
+          ls -la "$APP"
+          echo "Architectures: $(lipo -archs "$APP/Runner")"
+          plutil -p "$APP/Info.plist" | grep -E 'CFBundle(Identifier|ShortVersionString|Version|DisplayName)|MinimumOSVersion|NSFaceIDUsageDescription'
+          [[ "$(plutil -extract CFBundleIdentifier raw "$APP/Info.plist")" == com.noteforce.app ]] || { echo "Wrong bundle id"; exit 1; }
+          VER=$(sed -nE 's/^version: ([^+[:space:]]+).*/\1/p' pubspec.yaml)
+          SV=$(plutil -extract CFBundleShortVersionString raw "$APP/Info.plist")
+          [[ "$SV" == "$VER" ]] || { echo "Version $SV, expected $VER"; exit 1; }
+          grep -aqF "$VER" "$APP/Frameworks/App.framework/App" || { echo "Version $VER not found in App"; exit 1; }
+          echo "lava.top mentions in the app code: $(grep -ac 'lava.top' "$APP/Frameworks/App.framework/App" || true)"
+          ls "$APP/Frameworks"
