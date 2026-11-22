@@ -304,3 +304,8 @@ jobs:
           grep -aqF "$VER" "$APP/Frameworks/App.framework/App" || { echo "Version $VER not found in App"; exit 1; }
           echo "lava.top mentions in the app code: $(grep -ac 'lava.top' "$APP/Frameworks/App.framework/App" || true)"
           ls "$APP/Frameworks"
+          # Face ID prompt in both languages
+          for l in en ru; do
+            [[ -f "$APP/$l.lproj/InfoPlist.strings" ]] || { echo "No $l.lproj/InfoPlist.strings"; exit 1; }
+            echo "$l: $(plutil -extract NSFaceIDUsageDescription raw "$APP/$l.lproj/InfoPlist.strings")"
+          done
