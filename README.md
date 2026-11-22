@@ -17,8 +17,6 @@ Colored notes and checklists for Windows, macOS, Linux and Android. One account 
 | **macOS 12 or later** (Apple Silicon and Intel) | [NoteForce-macOS.zip](https://github.com/U-Said/NoteForce-releases/releases/latest/download/NoteForce-macOS.zip) |
 | **Linux** (x64, desktops with GTK 3: Ubuntu 22.04+, Debian 12+, Fedora, Mint 21+ and others) | [NoteForce-Linux.tar.gz](https://github.com/U-Said/NoteForce-releases/releases/latest/download/NoteForce-Linux.tar.gz) |
 
-*Windows on ARM, macOS and Linux are still version 1.6.2 for now (their build servers are temporarily unavailable): there the password is asked each time a locked note is opened. Version 1.6.3 for them will follow.*
-
 **Android users of version 1.5 or earlier:** version 1.6 has to be installed once from scratch — see [Install and update](#install-and-update).
 
 The links always point to the latest version. All versions are in [Releases](https://github.com/U-Said/NoteForce-releases/releases).
@@ -102,8 +100,6 @@ NoteForce is free and has no ads. If it helps you, you can say thanks with a don
 | **Windows 11 на ARM** (Snapdragon: Surface Pro 11/12, Copilot+ PC) | [NoteForce-Windows-arm64.zip](https://github.com/U-Said/NoteForce-releases/releases/latest/download/NoteForce-Windows-arm64.zip) |
 | **macOS 12 и новее** (Apple Silicon и Intel) | [NoteForce-macOS.zip](https://github.com/U-Said/NoteForce-releases/releases/latest/download/NoteForce-macOS.zip) |
 | **Linux** (x64, рабочий стол с GTK 3: Ubuntu 22.04+, Debian 12+, Fedora, Mint 21+ и другие) | [NoteForce-Linux.tar.gz](https://github.com/U-Said/NoteForce-releases/releases/latest/download/NoteForce-Linux.tar.gz) |
-
-*Для Windows на ARM, macOS и Linux пока версия 1.6.2 (их серверы сборки временно недоступны): там пароль спрашивается при каждом открытии заблокированной заметки. Версия 1.6.3 для них появится позже.*
 
 **У кого на Android стоит версия 1.5 или более ранняя:** версию 1.6 нужно один раз установить заново — см. [Установка и обновление](#установка-и-обновление).
 
