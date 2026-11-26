@@ -21,6 +21,8 @@ Colored notes and checklists for Windows, macOS, Linux and Android. One account 
 
 The links always point to the latest version. All versions are in [Releases](https://github.com/U-Said/NoteForce-releases/releases).
 
+**Windows via Microsoft Store:** [NoteForce: Fast Notes](https://apps.microsoft.com/detail/9PLPBDJND4GL), or in a terminal: `winget install 9PLPBDJND4GL`. The Store version is signed by Microsoft, so Windows shows no warning, and it updates by itself; new versions reach the Store a few days later than here.
+
 ## What the picture shows
 
 1. **Colors.** 10 colors; notes can be filtered and sorted by color. With Pro, each of the 10 colors can get your own shade and name.
@@ -104,6 +106,8 @@ NoteForce is free and has no ads. If it helps you, you can say thanks with a don
 **У кого на Android стоит версия 1.5 или более ранняя:** версию 1.6 нужно один раз установить заново — см. [Установка и обновление](#установка-и-обновление).
 
 Ссылки всегда ведут на последнюю версию. Все версии лежат в разделе [Releases](https://github.com/U-Said/NoteForce-releases/releases).
+
+**Windows через Microsoft Store:** [NoteForce: Fast Notes](https://apps.microsoft.com/detail/9PLPBDJND4GL) или командой в терминале: `winget install 9PLPBDJND4GL`. Версия из Store подписана Microsoft, поэтому Windows не показывает предупреждений, и обновляется сама; новые версии попадают туда на несколько дней позже, чем сюда.
 
 ### Что умеет NoteForce
 
